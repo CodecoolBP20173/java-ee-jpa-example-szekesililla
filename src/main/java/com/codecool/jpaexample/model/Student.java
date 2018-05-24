@@ -15,29 +15,41 @@ public class Student {
 
     private String name;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
+    @Transient
     private long age;
 
     @OneToOne
+    @JoinColumn(name = "address_id")
     private Address address;
+
+    @ElementCollection
+    @CollectionTable(name = "Phone")
+    private List<String> phoneNumbers = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "klass_id")
+    private Klass klass;
 
     public Student() {
     }
 
-    public Student(String name, String email, Date dateOfBirth) {
+    public Student(String name, String email, Date dateOfBirth, List<String> phoneNumber) {
         this.name = name;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.age = (Calendar.getInstance().getTimeInMillis() - dateOfBirth.getTime())
                 / (60L * 60L * 1000L * 24L * 365L);
+        this.phoneNumbers = phoneNumber;
     }
 
-    public Student(String name, String email, Date dateOfBirth, Address address) {
-        this(name, email, dateOfBirth);
+    public Student(String name, String email, Date dateOfBirth, List<String> phoneNumber, Address address) {
+        this(name, email, dateOfBirth, phoneNumber);
         this.address = address;
     }
 
@@ -95,4 +107,7 @@ public class Student {
                 '}';
     }
 
+    public void setKlass(Klass klass) {
+        this.klass = klass;
+    }
 }
